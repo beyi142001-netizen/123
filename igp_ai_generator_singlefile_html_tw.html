@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>雙重特殊需求 IGP AI 生成系統</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #1e3a8a;
+    }
+
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 12px;
+      margin-bottom: 10px;
+      background: #eff6ff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    #output {
+      line-height: 1.8;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body class="p-6">
+
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <div class="space-y-6">
+
+      <div class="card">
+        <h1 class="text-3xl font-bold mb-4 text-blue-900">
+          雙重特殊需求 IGP AI 生成系統
+        </h1>
+        <p class="text-gray-600">
+          適用國中資優 / ASD / ADHD / 雙重特殊需求學生
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="section-title">一、學生基本資料</div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <input id="studentName" class="border rounded-lg p-3" placeholder="學生姓名" />
+          <input id="grade" class="border rounded-lg p-3" value="國三" placeholder="年級" />
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-4">
+          <input id="school" class="border rounded-lg p-3" placeholder="學校" />
+          <input id="className" class="border rounded-lg p-3" placeholder="班級" />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">二、鑑定類型</div>
+
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="ASD" class="diagnosis" /> ASD</label>
+          <label><input type="checkbox" value="ADHD" class="diagnosis" /> ADHD</label>
+          <label><input type="checkbox" value="語文資優" class="diagnosis" /> 語文資優</label>
+          <label><input type="checkbox" value="數理資優" class="diagnosis" /> 數理資優</label>
+          <label><input type="checkbox" value="創造力資優" class="diagnosis" /> 創造力資優</label>
+          <label><input type="checkbox" value="學障" class="diagnosis" /> 學障</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">三、優勢能力</div>
+
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="語文推理能力強" class="strength" /> 語文推理能力強</label>
+          <label><input type="checkbox" value="創造力佳" class="strength" /> 創造力佳</label>
+          <label><input type="checkbox" value="批判思考能力強" class="strength" /> 批判思考能力強</label>
+          <label><input type="checkbox" value="自主學習能力佳" class="strength" /> 自主學習能力佳</label>
+          <label><input type="checkbox" value="深度探究能力強" class="strength" /> 深度探究能力強</label>
+          <label><input type="checkbox" value="藝術表現能力佳" class="strength" /> 藝術表現能力佳</label>
+          <label><input type="checkbox" value="領導能力佳" class="strength" /> 領導能力佳</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">四、弱勢與特殊需求</div>
+
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="執行功能困難" class="weakness" /> 執行功能困難</label>
+          <label><input type="checkbox" value="情緒調節困難" class="weakness" /> 情緒調節困難</label>
+          <label><input type="checkbox" value="社交互動困難" class="weakness" /> 社交互動困難</label>
+          <label><input type="checkbox" value="容易焦慮" class="weakness" /> 容易焦慮</label>
+          <label><input type="checkbox" value="完美主義" class="weakness" /> 完美主義</label>
+          <label><input type="checkbox" value="專注力不足" class="weakness" /> 專注力不足</label>
+          <label><input type="checkbox" value="時間管理困難" class="weakness" /> 時間管理困難</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">五、學生情境描述</div>
+
+        <textarea id="description" class="w-full border rounded-xl p-4" placeholder="請輸入學生在課堂、人際、情緒或學習上的具體狀況..."></textarea>
+      </div>
+
+      <div class="flex gap-4">
+        <button onclick="generateIGP()"
+          class="bg-blue-700 hover:bg-blue-800 text-white px-6 py-4 rounded-2xl font-bold w-full">
+          AI 生成 IGP
+        </button>
+
+        <button onclick="downloadWord()"
+          class="bg-green-700 hover:bg-green-800 text-white px-6 py-4 rounded-2xl font-bold w-full">
+          匯出 Word
+        </button>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="card sticky top-4">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-blue-900">IGP 生成結果</h2>
+        </div>
+
+        <div id="output">
+          尚未生成內容
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+
+function getCheckedValues(className) {
+  return Array.from(document.querySelectorAll(`.${className}:checked`))
+    .map(el => el.value);
+}
+
+function generateIGP() {
+
+  const name = document.getElementById('studentName').value || '學生';
+  const grade = document.getElementById('grade').value;
+  const school = document.getElementById('school').value;
+  const className = document.getElementById('className').value;
+
+  const diagnosis = getCheckedValues('diagnosis');
+  const strengths = getCheckedValues('strength');
+  const weaknesses = getCheckedValues('weakness');
+  const description = document.getElementById('description').value;
+
+  const educationNeeds = [];
+  const strategies = [];
+  const goals = [];
+
+  if (diagnosis.includes('ASD')) {
+    educationNeeds.push('需要結構化社交支持與情緒調節策略');
+    strategies.push('提供社會性故事與角色扮演練習');
+    strategies.push('建立固定流程與預告轉換活動');
+    goals.push('能在人際衝突情境中使用我訊息表達需求');
+  }
+
+  if (diagnosis.includes('ADHD')) {
+    educationNeeds.push('需要執行功能與專注策略支持');
+    strategies.push('使用視覺化任務分析清單');
+    strategies.push('將大型任務拆解為小步驟');
+    goals.push('能自主規劃並完成階段性學習任務');
+  }
+
+  if (weaknesses.includes('情緒調節困難')) {
+    strategies.push('建立情緒日記與ABC情緒反思');
+    goals.push('能辨識自身情緒並使用冷靜策略');
+  }
+
+  if (weaknesses.includes('社交互動困難')) {
+    strategies.push('練習三明治溝通法與同儕互動技巧');
+    goals.push('能在團體活動中維持適切互動');
+  }
+
+  if (strengths.includes('語文推理能力強')) {
+    strategies.push('運用語文優勢協助抽象概念理解');
+  }
+
+  if (strengths.includes('創造力佳')) {
+    goals.push('能透過專題研究展現創意與問題解決能力');
+  }
+
+  const summary = `
+    ${name}目前就讀${grade}，具備${strengths.join('、')}等優勢能力，
+    並呈現${weaknesses.join('、')}等需求特質。
+    學生具有${diagnosis.join('、')}之雙重特殊需求特質，
+    在學習與人際互動上需要適性支持與情緒調節協助。
+  `;
+
+  const html = `
+
+  <div id="wordContent">
+
+  <h1 style="font-size:28px;font-weight:bold;text-align:center;margin-bottom:24px;">
+    資優學生個別輔導計畫（IGP）
+  </h1>
+
+  <table>
+    <tr>
+      <th>學生姓名</th>
+      <td>${name}</td>
+      <th>年級</th>
+      <td>${grade}</td>
+    </tr>
+
+    <tr>
+      <th>學校</th>
+      <td>${school}</td>
+      <th>班級</th>
+      <td>${className}</td>
+    </tr>
+
+    <tr>
+      <th>鑑定類型</th>
+      <td colspan="3">${diagnosis.join('、')}</td>
+    </tr>
+  </table>
+
+  <br>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a;">
+    一、學生特質摘要
+  </h2>
+
+  <p>${summary}</p>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a; margin-top:20px;">
+    二、優勢能力分析
+  </h2>
+
+  <ul>
+    ${strengths.map(s => `<li>${s}</li>`).join('')}
+  </ul>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a; margin-top:20px;">
+    三、弱勢能力與特殊需求
+  </h2>
+
+  <ul>
+    ${weaknesses.map(w => `<li>${w}</li>`).join('')}
+  </ul>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a; margin-top:20px;">
+    四、教育需求分析
+  </h2>
+
+  <ul>
+    ${educationNeeds.map(e => `<li>${e}</li>`).join('')}
+  </ul>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a; margin-top:20px;">
+    五、教育目標
+  </h2>
+
+  <ol>
+    ${goals.map(g => `<li>${g}</li>`).join('')}
+  </ol>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a; margin-top:20px;">
+    六、教學與輔導策略
+  </h2>
+
+  <ul>
+    ${strategies.map(s => `<li>${s}</li>`).join('')}
+  </ul>
+
+  <h2 style="font-size:22px;font-weight:bold;color:#1e3a8a; margin-top:20px;">
+    七、教師觀察補充
+  </h2>
+
+  <p>${description || '尚無補充內容'}</p>
+
+  </div>
+  `;
+
+  document.getElementById('output').innerHTML = html;
+}
+
+function downloadWord() {
+
+  const content = document.getElementById('output').innerHTML;
+
+  if(content.includes('尚未生成內容')) {
+    alert('請先生成 IGP');
+    return;
+  }
+
+  const converted = htmlDocx.asBlob(`
+    <html>
+      <head>
+        <meta charset="utf-8">
+      </head>
+      <body>
+        ${content}
+      </body>
+    </html>
+  `);
+
+  saveAs(converted, 'IGP_個別輔導計畫.docx');
+}
+
+</script>
+
+</body>
+</html>
